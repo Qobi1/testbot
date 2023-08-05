@@ -3,9 +3,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from sql import *
 from telegram.error import NetworkError, TimedOut
 from time import sleep
-import asyncio
 CHANNELS = [("Siz buni blarmidingiz", -1001928509371, 'https://t.me/siz_buni_blarmidingiz')]
-TOKEN = "6630912635:AAGDR6ktgo1Bbbt77GUx-AbR76hWk_AflXA"
+TOKEN = "6630912635:AAF1uTbHdYV7hmG6sPyFCh2WzOTYfoT36LM"
 
 
 def text(language, command, user=None):
@@ -33,46 +32,40 @@ def text(language, command, user=None):
 
 
 async def start(update: Update, context: CallbackContext):
-    try:
-        user = update.effective_user
-        old_user = get_user(user.id)
-        if old_user is None:
-            insert_user(user_id=user.id)
+    user = update.effective_user
+    old_user = get_user(user.id)
+    if old_user is None:
+        insert_user(user_id=user.id)
+        await update.message.reply_text("🇷🇺 - Выберите язык!\n🇺🇿 - Tilni tanlang!", reply_markup=buttons(type='lang'))
+    else:
+        try:
+            print(old_user)
+            update_info(user_id=user.id, state=2)
+            await update.message.reply_text(text(language=old_user[1], command=1, user=user), reply_markup=buttons(type='start'))
+        except Exception as e:
+            print(e)
             await update.message.reply_text("🇷🇺 - Выберите язык!\n🇺🇿 - Tilni tanlang!", reply_markup=buttons(type='lang'))
-        else:
-            try:
-                print(old_user)
-                update_info(user_id=user.id, state=2)
-                await update.message.reply_text(text(language=old_user[1], command=1, user=user), reply_markup=buttons(type='start'))
-            except Exception as e:
-                print(e)
-                await update.message.reply_text("🇷🇺 - Выберите язык!\n🇺🇿 - Tilni tanlang!", reply_markup=buttons(type='lang'))
-    except Exception as e:
-        print(e)
 
 
 async def message_handler(update: Update, context: CallbackContext):
-    try:
-        user = update.effective_user
-        old_user = get_user(user.id)
-        if old_user[2] == 1:
-            await update.message.reply_text(text(language=old_user[1], command=1, user=user))
-            update_info(user.id, 2)
-        elif old_user[2] == 4:
-            await update.message.reply_text("Загрузка..")
-            sleep(2)
-            await update.message.reply_text("Анализ..")
-            sleep(2)
-            await update.message.reply_text(text(language=old_user[1], command=4, user=user),
-                                            reply_markup=buttons(type='channels'))
-            update_info(user_id=user.id, state=5)
-    except Exception as e:
-        print(e)
+    user = update.effective_user
+    old_user = get_user(user.id)
+    if old_user[2] == 1:
+        await update.message.reply_text(text(language=old_user[1], command=1, user=user))
+        update_info(user.id, 2)
+    elif old_user[2] == 4:
+        await update.message.reply_text("Загрузка..")
+        sleep(2)
+        await update.message.reply_text("Анализ..")
+        sleep(2)
+        await update.message.reply_text(text(language=old_user[1], command=4, user=user),
+                                        reply_markup=buttons(type='channels'))
+        update_info(user_id=user.id, state=5)
+
 
 async def inline_handler(update: Update, context: CallbackContext):
     user = update.effective_user
     old_user = get_user(user.id)
-    print(old_user)
     query = update.callback_query
     if old_user[2] == 1:
         await query.message.delete()
