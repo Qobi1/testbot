@@ -118,14 +118,11 @@ def buttons(type=None):
 
 
 def main():
-    try:
-        application = Application.builder().token(TOKEN).build()
-        application.add_handler(CommandHandler('start', start))
-        application.add_handler(MessageHandler(filters.TEXT, message_handler))
-        application.add_handler(CallbackQueryHandler(inline_handler))
-        application.run_polling()
-    except TimedOut:
-        sleep(1)
+    application = Application.builder().token(TOKEN).build()
+    application.add_handler(CommandHandler('start', start))
+    application.add_handler(MessageHandler(filters.TEXT, message_handler))
+    application.add_handler(CallbackQueryHandler(inline_handler))
+    application.run_polling()
 
 if __name__ == '__main__':
     main()
