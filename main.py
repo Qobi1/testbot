@@ -1,10 +1,11 @@
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext, CallbackQueryHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from sql import *
+from telegram.error import NetworkError, TimedOut
 from time import sleep
+import asyncio
 CHANNELS = [("Siz buni blarmidingiz", -1001928509371, 'https://t.me/siz_buni_blarmidingiz')]
-# TOKEN = "6630912635:AAGDR6ktgo1Bbbt77GUx-AbR76hWk_AflXA"
-TOKEN = "6166820369:AAGD7VukuFLK7YZ9qYg2YYmIc_25E7PMv_8"
+TOKEN = "6630912635:AAGDR6ktgo1Bbbt77GUx-AbR76hWk_AflXA"
 
 
 def text(language, command, user=None):
@@ -119,12 +120,14 @@ def buttons(type=None):
 
 
 def main():
-    application = Application.builder().token(TOKEN).build()
-    application.add_handler(CommandHandler('start', start))
-    application.add_handler(MessageHandler(filters.TEXT, message_handler))
-    application.add_handler(CallbackQueryHandler(inline_handler))
-    application.run_polling()
-
+    try:
+        application = Application.builder().token(TOKEN).build()
+        application.add_handler(CommandHandler('start', start))
+        application.add_handler(MessageHandler(filters.TEXT, message_handler))
+        application.add_handler(CallbackQueryHandler(inline_handler))
+        application.run_polling()
+    except TimedOut:
+        await asyncio.sleep(1)
 
 if __name__ == '__main__':
     main()
