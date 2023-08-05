@@ -132,7 +132,7 @@ def main():
         application.add_handler(CallbackQueryHandler(inline_handler))
         application.run_polling()
     except TimedOut:
-        await asyncio.sleep(1)
+        sleep(1)
 
 if __name__ == '__main__':
     main()
