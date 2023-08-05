@@ -33,36 +33,41 @@ def text(language, command, user=None):
 
 
 async def start(update: Update, context: CallbackContext):
-    user = update.effective_user
-    old_user = get_user(user.id)
-    if old_user is None:
-        insert_user(user_id=user.id)
-        await update.message.reply_text("🇷🇺 - Выберите язык!\n🇺🇿 - Tilni tanlang!", reply_markup=buttons(type='lang'))
-    else:
-        try:
-            print(old_user)
-            update_info(user_id=user.id, state=2)
-            await update.message.reply_text(text(language=old_user[1], command=1, user=user), reply_markup=buttons(type='start'))
-        except Exception as e:
-            print(e)
+    try:
+        user = update.effective_user
+        old_user = get_user(user.id)
+        if old_user is None:
+            insert_user(user_id=user.id)
             await update.message.reply_text("🇷🇺 - Выберите язык!\n🇺🇿 - Tilni tanlang!", reply_markup=buttons(type='lang'))
+        else:
+            try:
+                print(old_user)
+                update_info(user_id=user.id, state=2)
+                await update.message.reply_text(text(language=old_user[1], command=1, user=user), reply_markup=buttons(type='start'))
+            except Exception as e:
+                print(e)
+                await update.message.reply_text("🇷🇺 - Выберите язык!\n🇺🇿 - Tilni tanlang!", reply_markup=buttons(type='lang'))
+    except Exception as e:
+        print(e)
 
 
 async def message_handler(update: Update, context: CallbackContext):
-    user = update.effective_user
-    old_user = get_user(user.id)
-    if old_user[2] == 1:
-        await update.message.reply_text(text(language=old_user[1], command=1, user=user))
-        update_info(user.id, 2)
-    elif old_user[2] == 4:
-        await update.message.reply_text("Загрузка..")
-        sleep(2)
-        await update.message.reply_text("Анализ..")
-        sleep(2)
-        await update.message.reply_text(text(language=old_user[1], command=4, user=user),
-                                        reply_markup=buttons(type='channels'))
-        update_info(user_id=user.id, state=5)
-
+    try:
+        user = update.effective_user
+        old_user = get_user(user.id)
+        if old_user[2] == 1:
+            await update.message.reply_text(text(language=old_user[1], command=1, user=user))
+            update_info(user.id, 2)
+        elif old_user[2] == 4:
+            await update.message.reply_text("Загрузка..")
+            sleep(2)
+            await update.message.reply_text("Анализ..")
+            sleep(2)
+            await update.message.reply_text(text(language=old_user[1], command=4, user=user),
+                                            reply_markup=buttons(type='channels'))
+            update_info(user_id=user.id, state=5)
+    except Exception as e:
+        print(e)
 
 async def inline_handler(update: Update, context: CallbackContext):
     user = update.effective_user
