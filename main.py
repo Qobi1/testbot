@@ -3,7 +3,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from sql import *
 from time import sleep
 CHANNELS = [("Siz buni blarmidingiz", -1001928509371, 'https://t.me/siz_buni_blarmidingiz')]
-TOKEN = "6630912635:AAGDR6ktgo1Bbbt77GUx-AbR76hWk_AflXA"
+# TOKEN = "6630912635:AAGDR6ktgo1Bbbt77GUx-AbR76hWk_AflXA"
+TOKEN = "6166820369:AAGD7VukuFLK7YZ9qYg2YYmIc_25E7PMv_8"
 
 
 def text(language, command, user=None):
